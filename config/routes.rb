@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  root to: redirect("/carbon_projects")
+
   resources :carbon_projects, only: [ :index ]
 
   namespace :api do
