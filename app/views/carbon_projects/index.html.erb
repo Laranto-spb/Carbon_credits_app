@@ -1,0 +1,236 @@
+<div class="eco-layout">
+  <header class="eco-header">
+    <h1 class="eco-title">Carbon Projects</h1>
+    <p class="eco-subtitle">Отслеживаем проекты по снижению выбросов CO₂</p>
+  </header>
+
+  <!-- Панель фильтров (Эко-стиль) -->
+  <div class="filters-panel">
+    <%= form_with url: carbon_projects_path, method: :get, local: true, html: { class: "filter-form" } do %>
+
+      <div class="filter-group">
+        <label for="country" class="filter-label">Страна</label>
+        <%= select_tag :country,
+            options_for_select([["Все страны", ""], "Brazil", "India", "China", "USA", "Germany"], params[:country]),
+            class: "eco-select" %>
+      </div>
+
+      <div class="filter-group">
+        <label for="project_type" class="filter-label">Тип проекта</label>
+        <%= select_tag :project_type,
+            options_for_select([["Все типы", ""], "Forestry", "Energy", "Waste", "Agriculture"], params[:project_type]),
+            class: "eco-select" %>
+      </div>
+
+      <div class="filter-actions">
+        <button type="submit" class="btn btn-primary">Применить</button>
+        <% if params[:country].present? || params[:project_type].present? %>
+          <%= link_to "Сбросить", carbon_projects_path, class: "btn btn-secondary" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Таблица данных -->
+  <div class="table-container">
+    <% if @projects.any? %>
+      <table class="eco-table">
+        <thead>
+          <tr>
+            <th>Проект</th>
+            <th>Страна</th>
+            <th>Тип</th>
+            <th class="numeric-col">CO₂e (тонн)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @projects.each do |p| %>
+            <tr class="row-item">
+              <td class="cell-name"><%= p.name || '-' %></td>
+              <td><span class="badge badge-country"><%= p.country || '-' %></span></td>
+              <td><span class="badge badge-type"><%= p.project_type || '-' %></span></td>
+              <td class="numeric-col"><%= number_with_delimiter(p.total_co2e_tons || 0) %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="empty-state">
+        <div class="empty-icon">🌿</div>
+        <p>По этим фильтрам проектов не найдено.</p>
+        <%= link_to "Показать все проекты", carbon_projects_path, class: "btn btn-link" %>
+      </div>
+    <% end %>
+  </div>
+
+  <footer class="meta-info">
+
+  </footer>
+</div>
+
+<style>
+  /* Общий фон страницы - очень светлый, почти белый, но с легким оттенком природы */
+  body { background-color: #F9FDFC; color: #333; font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+
+  .eco-layout { max-width: 1200px; margin: 0 auto; padding: 2rem 1rem; }
+
+  /* Заголовок */
+  .eco-header { margin-bottom: 2rem; text-align: center; }
+  .eco-title {
+    color: #1a4e34; /* Тёмно-зелёный, как хвойный лес */
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.2;
+  }
+  .eco-subtitle {
+    color: #556b55; /* Серо-зелёный */
+    margin-top: 0.5rem;
+    font-size: 1rem;
+  }
+
+  /* Панель фильтров */
+  .filters-panel {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(46, 139, 87, 0.1); /* Лёгкая зелёная тень */
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: flex-end;
+  }
+
+  .filter-group { flex: 1; min-width: 200px; display: flex; flex-direction: column; }
+  .filter-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #2c523a; /* Тёмный зелёный */
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .eco-select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #d1e2d6;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    background-color: #f8fafb;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .eco-select:focus {
+    outline: none;
+    border-color: #2E8B57;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.15);
+  }
+
+  /* Кнопки */
+  .filter-actions { display: flex; gap: 0.75rem; align-self: flex-end; }
+
+  .btn {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 0.95rem;
+  }
+
+  .btn-primary {
+    background-color: #2E8B57; /* SeaGreen - классический природный цвет */
+    color: white;
+  }
+  .btn-primary:hover { background-color: #226b42; transform: translateY(-1px); }
+
+  .btn-secondary {
+    background-color: #e8f5e9;
+    color: #2c523a;
+    border: 1px solid #c8e6c9;
+  }
+  .btn-secondary:hover { background-color: #c8e6c9; }
+
+  .btn-link {
+    background: none;
+    border: none;
+    color: #2E8B57;
+    padding: 0;
+    font-size: 1rem;
+  }
+  .btn-link:hover { text-decoration: underline; }
+
+  /* Таблица */
+  .table-container {
+    background: #ffffff;
+    border-radius: 16px;
+    overflow: hidden; /* Скругление углов для таблицы */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.03);
+  }
+
+  .eco-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+
+  .eco-table th {
+    text-align: left;
+    padding: 1.25rem 1.5rem;
+    background-color: #f3faf7;
+    color: #4a6f5a;
+    font-weight: 600;
+    border-bottom: 1px solid #e5ede9;
+  }
+
+  .eco-table td {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #f0f7f3;
+    vertical-align: middle;
+    color: #374151;
+  }
+
+  .row-item:hover { background-color: #f9fdfc; }
+
+  /* Бейджи (Страна и Тип) */
+  .badge {
+    padding: 0.3rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .badge-country { background-color: #dcfce7; color: #166534; }
+  .badge-type { background-color: #fef3c7; color: #92400e; } /* Тёплый песочный для типа */
+
+  .numeric-col { text-align: right; color: #1f2937; font-weight: 500; }
+
+  /* Состояние "Нет данных" */
+  .empty-state {
+    padding: 3rem;
+    text-align: center;
+    background: #f9fdfc;
+    border-radius: 16px;
+    color: #6b7280;
+  }
+  .empty-icon { font-size: 3rem; display: block; margin-bottom: 1rem; }
+
+  /* Футер */
+  .meta-info {
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
+    color: #9ca3af;
+    text-align: center;
+  }
+  .link-dashboard { color: #2E8B57; font-weight: 500; text-decoration: none; }
+  .link-dashboard:hover { text-decoration: underline; }
+
+  /* Адаптив для мобильных */
+  @media (max-width: 768px) {
+    .filters-panel, .filter-actions, .filter-group { flex-direction: column; align-items: stretch; }
+    .eco-title { font-size: 2rem; }
+    .eco-table, .table-container { overflow-x: auto; }
+  }
+</style>

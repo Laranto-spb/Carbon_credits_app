@@ -1,0 +1,2 @@
+class CarbonProject < ApplicationRecord
+end

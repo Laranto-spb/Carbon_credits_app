@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    command: bundle exec rails server -b 0.0.0.0
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: sqlite3:////app/db/development.sqlite3
+      REDIS_URL: redis://redis:6379/0
+      RAILS_ENV: development
+      BUNDLE_JOBS: 4
+      APIFY_API_TOKEN: ${APIFY_API_TOKEN}
+      APIFY_DATASET_ID: ${APIFY_DATASET_ID}
+    volumes:
+      - .:/app
+      - ./db:/app/db
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  carbon_db:
+  redis_data:
