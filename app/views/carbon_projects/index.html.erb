@@ -1,136 +1,71 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Carbon Projects</title>
-    <style>
-      :root {
-        --ecobg: #f9fbf3;
-        --ecotext: #2d342a;
-        --ecoheader: #dbe9d8;
-        --ecoline: #c3d5b3;
-        --ecostatus-active: #4caf50;
-        --ecostatus-paused: #ff9800;
-        --ecostatus-pending: #ffc107;
-      }
+<div class="page-container">
+  <h1>Carbon Projects</h1>
+  <p class="subtitle">
+    Overview of registered carbon projects. Showing <%= @projects.size %> of <%= @total %> records (page <%= @page %> of <%= @total_pages %>).
+  </p>
 
-      body {
-        background-color: var(--ecobg);
-        color: var(--ecotext);
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-        margin: 0;
-        padding: 1.5rem;
-      }
+  <div class="per-page-controls">
+    <span style="color: #5a6b52; font-size: 0.9rem;">Show:</span>
+    <% [5, 10, 20, 50].each do |size| %>
+      <%= link_to " #{size} ", carbon_projects_path(per_page: size, page: 1),
+                  class: (@per_page == size ? "per-page-btn active" : "per-page-btn") %>
+    <% end %>
+  </div>
 
-      .page-container {
-        max-width: 960px;
-        margin: 0 auto;
-      }
+  <% if @projects.any? %>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Country</th>
+          <th>Region</th>
+          <th>Status</th>
+          <th>Total Credits Issued</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @projects.each do |project| %>
+          <tr>
+            <td><%= project.name %></td>
+            <td><%= project.country %></td>
+            <td><%= project.region %></td>
+            <td>
+              <span class="status-badge status-<%= project.status.downcase %>">
+                <%= project.status %>
+              </span>
+            </td>
+            <td class="credits-value">
+              <%= number_to_currency(project.total_credits_issued, unit: "", precision: 2) %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
 
-      h1 {
-        margin-top: 0;
-        font-weight: 400;
-        letter-spacing: 0.03em;
-      }
-
-      .subtitle {
-        color: #5a6b52;
-        margin-bottom: 2rem;
-        font-size: 0.95rem;
-      }
-
-      table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 1rem;
-        box-shadow: 0 2px 8px rgba(45, 52, 42, 0.06);
-      }
-
-      thead th {
-        background-color: var(--ecoheader);
-        color: var(--ecotext);
-        text-align: left;
-        padding: 0.75rem 0.875rem;
-        border-bottom: 1px solid var(--ecoline);
-        font-weight: 500;
-      }
-
-      tbody td {
-        padding: 0.75rem 0.875rem;
-        vertical-align: middle;
-        border-bottom: 1px solid var(--ecoline);
-      }
-
-      tbody tr:last-child td {
-        border-bottom: none;
-      }
-
-      .status-badge {
-        display: inline-block;
-        padding: 0.25rem 0.625rem;
-        border-radius: 999px;
-        color: white;
-        font-size: 0.75rem;
-        font-weight: 600;
-        text-transform: uppercase;
-      }
-
-      .status-active { background-color: var(--ecostatus-active); }
-      .status-paused { background-color: var(--ecostatus-paused); }
-      .status-pending { background-color: var(--ecostatus-pending); }
-
-      .credits-value {
-        font-weight: 600;
-        color: #3a4e38;
-      }
-
-      .empty-state {
-        text-align: center;
-        padding: 3rem;
-        color: #7a8e75;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="page-container">
-      <h1>Carbon Projects</h1>
-      <p class="subtitle">
-        Overview of registered carbon projects with issued credits.
-      </p>
-
-      <% if @projects.any? %>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Country</th>
-              <th>Region</th>
-              <th>Status</th>
-              <th>Total Credits Issued</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @projects.each do |project| %>
-              <tr>
-                <td><%= project.name %></td>
-                <td><%= project.country %></td>
-                <td><%= project.region %></td>
-                <td>
-                  <span class="status-badge status-<%= project.status.downcase %>">
-                    <%= project.status %>
-                  </span>
-                </td>
-                <td class="credits-value">
-                  <%= number_to_currency(project.total_credits_issued, unit: "", precision: 2) %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+    <div class="pagination">
+      <% if @page > 1 %>
+        <%= link_to "← Previous", carbon_projects_path(page: @page - 1, per_page: @per_page), class: "prev-link" %>
       <% else %>
-        <div class="empty-state">
-          <p>No carbon projects found. Run `bin/rails db:seed` to populate demo data.</p>
-        </div>
+        <span style="opacity: 0.3;">← Previous</span>
+      <% end %>
+
+      <% (1..@total_pages).each do |p| %>
+        <% if p == @page %>
+          <span class="current"><%= p %></span>
+        <% else %>
+          <%= link_to p, carbon_projects_path(page: p, per_page: @per_page) %>
+        <% end %>
+      <% end %>
+
+      <% if @page < @total_pages %>
+        <%= link_to "Next →", carbon_projects_path(page: @page + 1, per_page: @per_page), class: "next-link" %>
+      <% else %>
+        <span style="opacity: 0.3;">Next →</span>
       <% end %>
     </div>
-  </body>
-</html>
+  <% else %>
+    <div class="empty-state">
+      <p>No carbon projects found. Run `bin/rails db:seed` to populate demo data.</p>
+    </div>
+  <% end %>
+</div>

@@ -18,10 +18,14 @@ class Api::V1::CarbonProjectsController < ApplicationController
 
       cache_key = cache_key_parts.join(":")
 
+      total = 0
+
       paginated_projects = Rails.cache.fetch(cache_key, expires_in: 3.minutes) do
         query = CarbonProject.all
         query = query.where(country: country) if country.present?
         query = query.where(project_type: project_type) if project_type.present?
+
+        total = query.count
 
         query.offset((page - 1) * per_page).limit(per_page)
       end
@@ -31,7 +35,7 @@ class Api::V1::CarbonProjectsController < ApplicationController
         meta: {
           page: page,
           per_page: per_page,
-          total: CarbonProject.count
+          total: total
         }
       }
     end

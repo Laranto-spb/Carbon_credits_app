@@ -1,0 +1,162 @@
+:root {
+  --ecobg: #f9fbf3;
+  --ecotext: #2d342a;
+  --ecoheader: #dbe9d8;
+  --ecoline: #c3d5b3;
+  --ecostatus-active: #4caf50;
+  --ecostatus-paused: #ff9800;
+  --ecostatus-pending: #ffc107;
+}
+
+body {
+  background-color: var(--ecobg);
+  color: var(--ecotext);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 1.5rem;
+}
+
+.page-container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+h1 {
+  margin-top: 0;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+
+.subtitle {
+  color: #5a6b52;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* --- Блок выбора размера страницы --- */
+.per-page-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.per-page-btn {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--ecoline);
+  background: white;
+  color: var(--ecotext);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.per-page-btn:hover {
+  background-color: var(--ecoheader);
+  border-color: transparent;
+  color: var(--ecotext);
+}
+
+.per-page-btn.active {
+  background-color: var(--ecostatus-active);
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+/* --- Таблица --- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+  box-shadow: 0 2px 8px rgba(45, 52, 42, 0.06);
+}
+
+thead th {
+  background-color: var(--ecoheader);
+  color: var(--ecotext);
+  text-align: left;
+  padding: 0.75rem 0.875rem;
+  border-bottom: 1px solid var(--ecoline);
+  font-weight: 500;
+}
+
+tbody td {
+  padding: 0.75rem 0.875rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--ecoline);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  border-radius: 999px;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-active {
+  background-color: var(--ecostatus-active);
+}
+
+.status-paused {
+  background-color: var(--ecostatus-paused);
+}
+
+.status-pending {
+  background-color: var(--ecostatus-pending);
+}
+
+.credits-value {
+  font-weight: 600;
+  color: #3a4e38;
+}
+
+/* --- Пагинация --- */
+.pagination {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination a,
+.pagination span {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--ecoline);
+  background: white;
+  color: var(--ecotext);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  transition: all 0.2s;
+}
+
+.pagination a:hover {
+  background-color: var(--ecoheader);
+  border-color: transparent;
+  color: var(--ecotext);
+}
+
+.pagination .current {
+  background-color: var(--ecostatus-active);
+  color: white;
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #7a8e75;
+}
