@@ -42,8 +42,14 @@ All seed data is inspired by real project patterns but is not tied to any live r
 
 ## How to Run Locally
 
-Use the provided `start.sh` script to spin up the full stack:
+Use the provided `start.sh` script to start:
 
 ```bash
 ./start.sh
+```
+
+To stop containers:
+
+```bash
+./stop.sh
 ```
