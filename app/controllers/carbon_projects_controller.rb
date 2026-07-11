@@ -10,19 +10,7 @@ class CarbonProjectsController < ApplicationController
     sort_by  = params[:sort_by]
     sort_order = params[:sort_order]
 
-    cache_key_parts = [
-      "carbon:projects:html:list",
-      country,
-      status,
-      page,
-      per_page,
-      sort_by,
-      sort_order
-    ].compact
-
-    cache_key = cache_key_parts.join(":")
-
-    @projects, @total = Rails.cache.fetch(cache_key, expires_in: 3.minutes) do
+    @projects, @total =
       CarbonRegistry::CarbonProjectsQuery.new(
         country: country,
         status: status,
@@ -31,7 +19,6 @@ class CarbonProjectsController < ApplicationController
         sort_by: sort_by,
         sort_order: sort_order
       ).call
-    end
 
     @page       = [ page.to_i, 1 ].max
     @per_page   = [ [ per_page.to_i, MAX_PER_PAGE ].min, 1 ].max

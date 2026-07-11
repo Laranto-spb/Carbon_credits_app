@@ -15,14 +15,32 @@ module CarbonRegistry
     end
 
     def call
-      query = base_query
-      total = query.count
-      records = apply_pagination(query)
+      cache_key = build_cache_key
 
-      [ records, total ]
+      Rails.cache.fetch(cache_key, expires_in: 3.minutes) do
+        query = base_query
+        total = query.count
+        records = apply_pagination(query).to_a
+
+        [ records, total ]
+      end
     end
 
     private
+
+    def build_cache_key
+      parts = [
+        "carbon:projects:query",
+        @country,
+        @status,
+        @page,
+        @per_page,
+        @sort_by,
+        @sort_order
+      ].compact
+
+      parts.join(":")
+    end
 
     def base_query
       q = CarbonProject.all
